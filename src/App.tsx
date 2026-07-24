@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { DESIGNS } from "./spinnerDesigns";
+import { initAudio, updateHum, playFlick, playBrake, playClick, setDesign } from "./audio";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -95,6 +96,9 @@ export default function App() {
         if (Math.abs(omegaRef.current) < 0.0005) omegaRef.current = 0;
 
         angleRef.current += omegaRef.current * dt;
+        updateHum(omegaRef.current * 60 / TWO_PI, dt);
+      } else {
+        updateHum(0, dt);
       }
 
       // Count rotations from whatever source moved the angle (drag or physics)
@@ -136,6 +140,7 @@ export default function App() {
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       e.preventDefault();
+      initAudio();
       (e.target as Element).setPointerCapture?.(e.pointerId);
       const pointerAngle = getPointerAngle(e.clientX, e.clientY);
       dragRef.current = {
@@ -213,6 +218,7 @@ export default function App() {
       releaseOmega = Math.max(-MAX_OMEGA, Math.min(MAX_OMEGA, releaseOmega));
 
       omegaRef.current = releaseOmega;
+      if (Math.abs(releaseOmega) > 1) playFlick(releaseOmega);
       dragRef.current.active = false;
       dragRef.current.pointerId = null;
       dragRef.current.samples = [];
@@ -226,10 +232,13 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         e.preventDefault();
+        initAudio();
         const dir = Math.random() > 0.5 ? 1 : -1;
-        omegaRef.current += dir * 40; // rad/s impulse
+        omegaRef.current += dir * 40;
+        playClick();
       } else if (e.code === "KeyB") {
-        omegaRef.current = 0; // brake
+        omegaRef.current = 0;
+        playBrake();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -377,7 +386,7 @@ export default function App() {
               return (
                 <button
                   key={d.id}
-                  onClick={() => setDesignId(d.id)}
+                  onClick={() => { setDesignId(d.id); setDesign(d.id); playClick(); }}
                   className={`group relative flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border transition ${
                     active
                       ? "border-white/40 bg-white/10 shadow-lg"
@@ -423,7 +432,7 @@ export default function App() {
               max={0.999}
               step={0.001}
               value={friction}
-              onChange={(e) => setFriction(parseFloat(e.target.value))}
+              onChange={(e) => { setFriction(parseFloat(e.target.value)); playClick(); }}
               className="w-full accent-white"
             />
             <div className="mt-1 flex justify-between text-[10px] text-white/40">
@@ -435,8 +444,10 @@ export default function App() {
           <div className="flex gap-2">
             <button
               onClick={() => {
+                initAudio();
                 const dir = Math.random() > 0.5 ? 1 : -1;
                 omegaRef.current += dir * 60;
+                playClick();
               }}
               className="flex-1 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold transition hover:bg-white/20 active:scale-95"
             >
@@ -445,6 +456,7 @@ export default function App() {
             <button
               onClick={() => {
                 omegaRef.current = 0;
+                playBrake();
               }}
               className="flex-1 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold transition hover:bg-white/20 active:scale-95"
             >
