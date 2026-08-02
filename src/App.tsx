@@ -43,6 +43,7 @@ export default function App() {
   const [designId, setDesignId] = useState<string>(DESIGNS[0].id);
   const [friction, setFriction] = useState<number>(0.992); // per frame @ 60fps
   const [isDragging, setIsDragging] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [stats, setStats] = useState<Stats>({ rpm: 0, maxRpm: 0, rotations: 0 });
 
   const design = DESIGNS.find((d) => d.id === designId) ?? DESIGNS[0];
@@ -294,6 +295,13 @@ export default function App() {
         <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
           <span className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Créateur</span>
           <span className="text-xs font-semibold text-white">Hylst - Geoffroy, avec IA</span>
+          <button
+            onClick={() => setShowInfo(true)}
+            title="Comment ce jeu a été fait"
+            className="ml-1 rounded-lg border border-white/10 bg-white/10 px-2 py-1 text-xs hover:bg-white/20 transition-colors"
+          >
+            ℹ️
+          </button>
         </div>
 
         <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/5 p-2 backdrop-blur sm:gap-4 sm:p-3">
@@ -478,6 +486,25 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {showInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4" onClick={() => setShowInfo(false)}>
+          <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#111318] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 space-y-3.5 text-sm leading-relaxed text-white/80">
+              <h3 className="text-xl font-bold text-white">Comment ce jeu a été fait</h3>
+              <p><strong className="text-white">Stack :</strong> React 19, TypeScript 5.9, Tailwind CSS 4, Vite 7, compilé en un seul fichier HTML, aucune dépendance chargée depuis l'extérieur.</p>
+              <p><strong className="text-white">Graphismes :</strong> le spinner et ses 5 designs (Tri Classique, Hexa, Quad, Barbell, Turbine) sont dessinés en SVG/DOM, avec une aura de vitesse et des effets visuels qui réagissent à la rotation.</p>
+              <p><strong className="text-white">Musique &amp; sons :</strong> synthétisés en direct avec l'API Web Audio, aucun fichier audio chargé.</p>
+              <p><strong className="text-white">Interactions :</strong> glisser pour lancer le spinner (la vitesse de lancer est déduite du mouvement), touche Espace pour propulser, touche B pour freiner.</p>
+              <p><strong className="text-white">Architecture :</strong> une seule boucle d'animation met à jour la vitesse angulaire à chaque image et l'applique à la rotation affichée.</p>
+              <p><strong className="text-white">Algorithmes notables :</strong> la vitesse de lancer est calculée à partir de l'historique des ~120 dernières millisecondes de mouvement du doigt, pas juste la dernière position. Le ralentissement suit une friction exponentielle réglable (du « Céramique » très glissant au « Rugueux »), calculée pour rester cohérente quel que soit le nombre d'images par seconde réellement affichées.</p>
+            </div>
+            <div className="border-t border-white/10 p-4 text-center">
+              <button onClick={() => setShowInfo(false)} className="px-6 py-2.5 rounded-xl font-bold text-white bg-white/10 hover:bg-white/20 active:scale-95 transition-all">Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
