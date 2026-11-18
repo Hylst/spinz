@@ -15,4 +15,4 @@ Fais tourner des fidget spinners avec un simple geste du doigt. 5 designs unique
 - Physique custom (drag, friction, releaseOmega)
 
 ## Contact
-- Email : geoffroy.streit@gmail.com
+- Email : geoffroy.streit@ik.me
