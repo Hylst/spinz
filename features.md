@@ -1,6 +1,6 @@
 # Fonctionnalites de Spinz
 
-- ✅ Fidget spinner 2D avec physique réaliste
+- ✅ Fidget spinner 2D avec inertie et friction réglables
 - ✅ Drag & flick pour lancer
 - ✅ 5 designs SVG (Tri, Hexa, Quad, Barbell, Turbine)
 - ✅ Frottement réglable (Rugueux → Ceramique)

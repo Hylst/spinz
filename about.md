@@ -3,7 +3,7 @@
 **Spinz** est un simulateur de fidget spinner physique developpe par **Geoffroy Streit** (alias **Hylst**).
 
 ## Le jeu
-Fais tourner des fidget spinners avec un simple geste du doigt. 5 designs uniques (Tri, Hexa, Quad, Barbell, Turbine), physique réaliste avec frottement réglable, compteurs RPM et rotations.
+Fais tourner des fidget spinners avec un simple geste du doigt. 5 designs (Tri, Hexa, Quad, Barbell, Turbine), inertie et friction réglables, compteurs RPM et rotations.
 
 ## Le createur
 - Developpeur d'applications, ancien graphiste et compositeur
